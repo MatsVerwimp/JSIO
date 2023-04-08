@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formuliervalidatie</title>
+  <link rel="stylesheet" href="formcss.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+<body>
+  <h1>Formuliervalidatie</h1>
+  <form id="myForm" >
+    <form>
+      <label for="voornaam">Voornaam:</label>
+      <input type="text" id="voornaam" name="voornaam" required>
+    
+      <label for="naam">Naam:</label>
+      <input type="text" id="naam" name="naam" required><br><br>
+    
+      <label for="gebruikersnaam">Gebruikersnaam:</label>
+      <input type="text" id="gebruikersnaam" name="gebruikersnaam" required>
+    
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required> <br> <br>
+    
+      <label for="wachtwoord">Wachtwoord:</label>
+      <input type="password" id="wachtwoord" name="wachtwoord" minlength="7" required>
+    
+      <label for="wachtwoord-herhalen">Wachtwoord herhalen:</label>
+      <input type="password" id="wachtwoord-herhalen" name="wachtwoord-herhalen" minlength="7" required><br><br>
+    
+      <label for="land">Land:</label>
+      <select id="land" name="land" required>
+        <option value="">-- Kies een land --</option>
+      </select>
+    
+      <label for="provincie">Provincie:</label>
+      <select id="provincie" name="provincie" required>
+        <option value="">-- Kies een provincie --</option>
+      </select>
+    
+      <label for="postcode">Postcode:</label>
+      <select id="postcode" name="postcode" required>
+        <option value="">-- Kies een postcode --</option>
+        <option value="1000">1000</option>
+        <option value="2000">2000</option>
+        <option value="3000">3000</option>
+      </select>
+      <h2>hou me op de hoogte</h2>
+      <label>
+        <input type="checkbox" name="nieuwsbrief">
+        Inschrijven voor nieuwsbrief
+      </label><br>
+      <label>
+        <input type="checkbox" name="voorwaarden" required>
+        Ik ga akkoord met de <a href="algemene-voorwaarden.html">algemene voorwaarden</a>.
+      </label><br>
+      <h2>betaling</h2>
+      <label>
+        <input type="radio" name="betaling" value="bankingapp">
+        banking app
+      </label>
+      <label>
+        <input type="radio" name="betaling" value="overschrijving">
+        overschrijving
+      </label>
+      <label>
+        <input type="radio" name="betaling" value="visacard">
+        Visa card
+      </label>
+      <label>
+        <input type="radio" name="betaling" value="PayPal">
+        PayPal
+      </label><br>
+      <button type="submit">Verzenden</button>
+    </form>
+  </form>
+  <script>
+    const knop = document.getElementById('submit');
+    
+    function validateForm() {
+      
+      const errors = [];
+
+     // Check empty fields
+      checkEmptyField(document.getElementById('voornaam'), 'Voornaam mag niet leeg zijn.', errors);
+     checkEmptyField(document.getElementById('naam'), 'Naam mag niet leeg zijn.', errors);
+     checkEmptyField(document.getElementById('gebruikersnaam'), 'Gebruikersnaam mag niet leeg zijn.', errors);
+     checkEmptyField(document.getElementById('adres'), 'Adres mag niet leeg zijn.', errors);
+
+    // Check email
+    const email = document.getElementById('email').value.trim();
+    if (!validateEmail(email)) {
+    errors.push('E-mailadres is niet correct.');
+   }
+
+    // Check passwords
+    const password = document.getElementById('wachtwoord').value.trim();
+    const confirmPassword = document.getElementById('herhaal_wachtwoord').value.trim();
+    if (password === '' || confirmPassword === '') {
+      errors.push('Beide wachtwoordvelden moeten worden ingevuld.');
+    } else if (password.length < 8) {
+      errors.push('Wachtwoord moet minstens 8 karakters lang zijn.');
+    } else if (password !== confirmPassword) {
+      errors.push('Wachtwoorden komen niet overeen.');
+    }
+
+    // Check dropdown menu
+    const country = document.getElementById('land').value.trim();
+    if (country === '') {
+     errors.push('Selecteer een land.');
+    }
+
+    const province = document.getElementById('provincie').value.trim();
+    if (province === '') {
+     errors.push('Selecteer een provincie.');
+    }
+
+    // Display errors or submit form
+    if (errors.length > 0) {
+     const errorList = document.getElementById('errors');
+     errorList.innerHTML = '';
+        errors.forEach(error => {
+       const li = document.createElement('li');
+       li.innerText = error;
+        errorList.appendChild(li);
+      });
+      return false;
+    } else {
+     return true;
+    }
+  }
+
+  function validateEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
+
+  function checkEmptyField(field, message, errors) {
+    if (field.value.trim() === '') {
+     errors.push(message);
+   }
+  }
+
+  // Populate country dropdown menu
+  const countrySelect = document.getElementById('land');
+  const countries = ['Belgium', 'France', 'Germany', 'Netherlands'];
+  countries.forEach(country => {
+    const option = document.createElement('option');
+    option.value = country;
+    option.innerText = country;
+    countrySelect.appendChild(option);
+  });
+  
+  const provinceSelect = document.getElementById('provincie');
+  countrySelect.addEventListener('change', () => {
+    const selectedCountry = countrySelect.value;
+    switch (selectedCountry) {
+      case 'Belgium':
+        populateProvinces(['Antwerp', 'Brussels', 'East Flanders', 'Flemish Brabant', 'Hainaut', 'Liège', 'Limburg', 'Luxembourg', 'Namur', 'Walloon Brabant', 'West Flanders']);
+        break;
+      case 'France':
+        populateProvinces(['Auvergne-Rhône-Alpes', 'Bourgogne-Franche-Comté', 'Brittany', 'Centre-Val de Loire', 'Corsica', 'Grand Est', 'Hauts-de-France', 'Île-de-France', 'Normandy', 'Nouvelle-Aquitaine', 'Occitanie', 'Pays de la Loire', 'Provence-Alpes-Côte d\'Azur']);
+         break;
+        case 'Germany':
+          populateProvinces(['Baden-Württemberg', 'Bavaria', 'Berlin', 'Brandenburg', 'Bremen', 'Hamburg', 'Hesse', 'Lower Saxony', 'Mecklenburg-Vorpommern', 'North Rhine-Westphalia', 'Rhineland-Palatinate', 'Saarland', 'Saxony', 'Saxony-Anhalt', 'Schleswig-Holstein', 'Thuringia']);
+          break;
+        case 'Netherlands':
+          populateProvinces(['Drenthe', 'Flevoland', 'Friesland', 'Gelderland', 'Groningen', 'Limburg', 'North Brabant', 'North Holland', 'Overijssel', 'South Holland', 'Utrecht', 'Zeeland']);
+          break;
+        default:
+          populateProvinces([]);
+          break;
+      }
+    });
+
+    function populateProvinces(provinces) {
+      provinceSelect.innerHTML = '';
+      provinces.forEach(province => {
+        const option = document.createElement('option');
+        option.value = province;
+        option.innerText = province;
+        provinceSelect.appendChild(option);
+     });
+    }
+
+  </script>
+    </body>
+</html>
